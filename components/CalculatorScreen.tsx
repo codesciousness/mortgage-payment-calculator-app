@@ -18,7 +18,7 @@ import { useNavigation } from '@react-navigation/native';
 import ToggleDarkMode from './ToggleDarkMode';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-const HomeScreen = (): JSX.Element => {
+const CalculatorScreen = (): JSX.Element => {
     const { colorMode, toggleColorMode } = useColorMode();
     const iconColor = colorMode === 'light' ? 'black' : 'white';
     const nav = useNavigation();
@@ -37,7 +37,7 @@ const HomeScreen = (): JSX.Element => {
                                 variant='outline'
                                 _text={{color: 'blueGray.900'}}
                                 onPress={() => nav.navigate('Payment')}
-                                endIcon={<MaterialCommunityIcons name="arrow-right-drop-circle-outline" size={24} color='#0f172a' />}
+                                endIcon={<MaterialCommunityIcons name="arrow-right-drop-circle-outline" size={24} color='#0f172a'/>}
                             >
                                 SEE DETAILS
                             </Button>
@@ -97,4 +97,4 @@ const HomeScreen = (): JSX.Element => {
     );
 };
 
-export default HomeScreen;
+export default CalculatorScreen;

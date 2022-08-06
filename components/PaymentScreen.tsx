@@ -88,7 +88,7 @@ const PaymentScreen = (): JSX.Element => {
                     variant='outline'
                     _text={{color: textColor}}
                     onPress={() => nav.navigate('Cost')}
-                    endIcon={<MaterialCommunityIcons name="arrow-right-drop-circle-outline" size={24} color={textColor} />}
+                    endIcon={<MaterialCommunityIcons name="arrow-right-drop-circle-outline" size={24} color={textColor}/>}
                 >
                     SEE COST
                 </Button>

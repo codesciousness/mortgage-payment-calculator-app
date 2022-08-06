@@ -2,8 +2,10 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import HomeScreen from './HomeScreen';
+import CalculatorScreen from './CalculatorScreen';
 import PaymentScreen from './PaymentScreen';
+import CostScreen from './CostScreen';
+import PayoffScreen from './PayoffScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -16,7 +18,7 @@ const AppNavigator = (): JSX.Element => {
                     tabBarIcon: ({ focused, color, size }) => {
                         let iconName: 'calculator' | 'calculator-outline' | 'pie-chart' | 'pie-chart-outline' | 'analytics' | 'analytics-outline' | 'cash-sharp' | 'cash-outline' = 'calculator';
 
-                        if (route.name === 'Home') {
+                        if (route.name === 'Calculator') {
                             iconName = focused ? 'calculator' : 'calculator-outline';
                         } 
                         else if (route.name === 'Payment') {
@@ -34,10 +36,10 @@ const AppNavigator = (): JSX.Element => {
                     tabBarInactiveTintColor: 'gray',
                 })}
             >
-                <Tab.Screen name="Home" component={HomeScreen}/>
-                <Tab.Screen name="Payment" component={PaymentScreen}/>
-                <Tab.Screen name="Cost" component={HomeScreen}/>
-                <Tab.Screen name="Payoff" component={HomeScreen}/>
+                <Tab.Screen name='Calculator' component={CalculatorScreen}/>
+                <Tab.Screen name='Payment' component={PaymentScreen}/>
+                <Tab.Screen name='Cost' component={CostScreen}/>
+                <Tab.Screen name='Payoff' component={PayoffScreen}/>
             </Tab.Navigator>
         </NavigationContainer>
     );

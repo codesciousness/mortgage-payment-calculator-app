@@ -1,12 +1,14 @@
 import React from 'react';
-import { Text, HStack, Switch, useColorMode } from 'native-base';
+import { HStack, Switch, useColorMode } from 'native-base';
+import { Fontisto } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 const ToggleDarkMode = (): JSX.Element => {
     const { colorMode, toggleColorMode } = useColorMode();
+    const iconColor = colorMode === 'light' ? 'black' : 'white';
 
     return (
         <HStack mr={2} space={1} alignItems='center' alignSelf='flex-end'>
-            <Text>Dark</Text>
             <Switch
                 isChecked={colorMode === 'light'}
                 onToggle={toggleColorMode}
@@ -16,7 +18,7 @@ const ToggleDarkMode = (): JSX.Element => {
                 onThumbColor='deepskyblue'
                 offThumbColor='blueGray.50'
             />
-            <Text>Light</Text>
+            {colorMode === 'light' ? <Fontisto name='day-sunny' size={24} color={iconColor}/> : <Ionicons name='moon-outline' size={24} color={iconColor}/>}
         </HStack>
     );
 };
