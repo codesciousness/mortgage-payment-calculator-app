@@ -1,21 +1,22 @@
 import React from 'react';
-import {
-    Box,
-    Button,
-    Center,
-    Heading,
-    HStack,
-    ScrollView,
-    Text,
-    useColorMode,
-    VStack
-} from 'native-base';
+import { Box, Button, Center, Heading, HStack, ScrollView, Text,
+    useColorMode, VStack } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
 import { PieChart } from 'react-native-gifted-charts';
 import ToggleDarkMode from './ToggleDarkMode';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { selectPropertyTax, selectHomeInsurance, selectPMI, selectHOAFees, 
+    selectMortgagePayment, selectMonthlyPayment } from '../loansSlice';
+import { useAppSelector } from '../app/hooks';
+import { stringToNum, formatAmount } from '../util/calculations';
 
 const PaymentScreen = (): JSX.Element => {
+    const propertyTax = useAppSelector(selectPropertyTax);
+    const homeInsurance = useAppSelector(selectHomeInsurance);
+    const privateMortgageInsurance = useAppSelector(selectPMI);
+    const hoaFees = useAppSelector(selectHOAFees);
+    const mortgagePayment = useAppSelector(selectMortgagePayment);
+    const monthlyPayment = useAppSelector(selectMonthlyPayment);
     const { colorMode, toggleColorMode } = useColorMode();
     const innerCircleColor = colorMode === 'light' ? '#f8fafc' : '#0f172a';
     const borderBottomColor = colorMode === 'light' ? 'blueGray.200' : 'blueGray.700';
@@ -23,11 +24,11 @@ const PaymentScreen = (): JSX.Element => {
     const nav = useNavigation();
 
     const data=[
-        { value: 1838, color: 'deepskyblue' },
-        { value: 315, color: 'lightskyblue' },
-        { value: 175, color: 'lightsteelblue' },
-        { value: 70, color: 'powderblue' },
-        { value: 45, color: 'paleturquoise' }
+        { value: stringToNum(mortgagePayment), color: 'deepskyblue' },
+        { value: stringToNum(propertyTax), color: 'lightskyblue' },
+        { value: stringToNum(homeInsurance), color: 'lightsteelblue' },
+        { value: stringToNum(privateMortgageInsurance), color: 'powderblue' },
+        { value: stringToNum(hoaFees), color: 'paleturquoise' }
     ];
 
     return (
@@ -40,7 +41,7 @@ const PaymentScreen = (): JSX.Element => {
                 <Center position='absolute'>
                     <VStack space={2}>
                         <Text textAlign='center'>Monthly payment</Text>
-                        <Heading size='xl' textAlign='center'>$2,328</Heading>
+                        <Heading size='xl' textAlign='center'>${monthlyPayment}</Heading>
                     </VStack>
                 </Center>
             </Center>
@@ -50,35 +51,35 @@ const PaymentScreen = (): JSX.Element => {
                         <Box bg='deepskyblue' w={4} h={4} borderRadius={50} mr={2}></Box>
                         <Text>Principal &amp; interest</Text>
                     </HStack>
-                    <Text>$1838</Text>
+                    <Text>${formatAmount(mortgagePayment)}</Text>
                 </HStack>
                 <HStack w='100%' px={2} py={4} borderBottomWidth={1} borderBottomColor={borderBottomColor} justifyContent='space-between' alignItems='center'>
                     <HStack alignItems='center'>
                         <Box bg='lightskyblue' w={4} h={4} borderRadius={50} mr={2}></Box>
                         <Text>Property tax</Text>
                     </HStack>
-                    <Text>$315</Text>
+                    <Text>${propertyTax}</Text>
                 </HStack>
                 <HStack w='100%' px={2} py={4} borderBottomWidth={1} borderBottomColor={borderBottomColor} justifyContent='space-between' alignItems='center'>
                     <HStack alignItems='center'>
                         <Box bg='lightsteelblue' w={4} h={4} borderRadius={50} mr={2}></Box>
                         <Text>Home insurance</Text>
                     </HStack>
-                    <Text>$175</Text>
+                    <Text>${homeInsurance}</Text>
                 </HStack>
                 <HStack w='100%' px={2} py={4} borderBottomWidth={1} borderBottomColor={borderBottomColor} justifyContent='space-between' alignItems='center'>
                     <HStack alignItems='center'>
                         <Box bg='powderblue' w={4} h={4} borderRadius={50} mr={2}></Box>
                         <Text>Private mortgage insurance</Text>
                     </HStack>
-                    <Text>$0</Text>
+                    <Text>${privateMortgageInsurance}</Text>
                 </HStack>
                 <HStack w='100%' px={2} py={4} borderBottomWidth={1} borderBottomColor={borderBottomColor} justifyContent='space-between' alignItems='center'>
                     <HStack alignItems='center'>
                         <Box bg='paleturquoise' w={4} h={4} borderRadius={50} mr={2}></Box>
                         <Text>HOA fees</Text>
                     </HStack>
-                    <Text>$0</Text>
+                    <Text>${hoaFees}</Text>
                 </HStack>
             </VStack>
             <Center>

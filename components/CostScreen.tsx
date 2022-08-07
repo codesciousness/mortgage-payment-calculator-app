@@ -1,71 +1,71 @@
 import React, { useState } from 'react';
-import {
-    Box,
-    Button,
-    Center,
-    Heading,
-    HStack,
-    ScrollView,
-    Text,
-    useColorMode,
-    View,
-    VStack
-} from 'native-base';
+import { Box, Button, Center, Heading, HStack, ScrollView, Text, useColorMode,
+    View, VStack } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
 import { LineChart } from 'react-native-gifted-charts';
 import ToggleDarkMode from './ToggleDarkMode';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { selectLoanAmount, selectTotalInterest, selectLoanCost, selectPayoffDate, 
+    selectAmortizationSchedule, AmortizationDetail } from '../loansSlice';
+import { useAppSelector } from '../app/hooks';
+import { stringToNum, formatAmount, formatDate } from '../util/calculations';
+
+interface DataPoint {
+    label: string;
+    value: number;
+    labelComponent: () => JSX.Element;
+};
 
 const CostScreen = (): JSX.Element => {
-    const customLabel = (val: string) => <Text fontWeight='bold'>{val.slice(3)}</Text>;
-
-    const data=[
-        { value: 328.88, date: '08/2022' },
-        { value: 330.46, date: '09/2022' },
-        { value: 332.04, date: '10/2022' },
-        { value: 333.63, date: '11/2022' },
-        { value: 335.23, date: '12/2022', labelComponent: () => customLabel('12/2022'), }
-    ];
-
-    const data2=[
-        { value: 1509.38, date: '08/2022' },
-        { value: 1507.80, date: '09/2022' },
-        { value: 1506.22, date: '10/2022' },
-        { value: 1504.62, date: '11/2022' },
-        { value: 1503.03, date: '12/2022' }
-    ];
-
-    const data3=[
-        { value: 314671.12, date: '08/2022' },
-        { value: 314340.67, date: '09/2022' },
-        { value: 314008.63, date: '10/2022' },
-        { value: 313675.00, date: '11/2022' },
-        { value: 313339.77, date: '12/2022' }
-    ];
-
-    const [ principalPaid, setPrincipalPaid ] = useState(data[0].value);
-    const [ interestPaid, setInterestPaid ] = useState(data2[0].value);
-    const [ loanBalance, setLoanBalance ] = useState(data3[0].value);
+    const loanAmount = useAppSelector(selectLoanAmount);
+    const totalInterest = useAppSelector(selectTotalInterest);
+    const loanCost = useAppSelector(selectLoanCost);
+    const payoffDate = useAppSelector(selectPayoffDate);
+    const amortizationSchedule = useAppSelector(selectAmortizationSchedule);
     const { colorMode, toggleColorMode } = useColorMode();
     const borderBottomColor = colorMode === 'light' ? 'blueGray.200' : 'blueGray.700';
     const textColor = colorMode === 'light' ? '#0f172a' : 'white';
     const iconColor = colorMode === 'light' ? 'black' : 'white';
     const nav = useNavigation();
 
+    const customLabel = (value: string) => <Text w={10} textAlign='center'>{value.slice(3)}</Text>;
+    const data: DataPoint[] = amortizationSchedule.map((row: AmortizationDetail, idx: number) => {
+        let dataPoint: DataPoint;
+        if ((idx + 1) % 120 === 0) {
+            dataPoint = { label: formatDate(row.date), value: stringToNum(row.totalPrincipal), labelComponent: () => customLabel('') };
+        }
+        else {
+            dataPoint = { label: formatDate(row.date), value: stringToNum(row.totalPrincipal), labelComponent: () => customLabel('') };
+        }
+        return dataPoint;
+    });
+    const data2: DataPoint[] = amortizationSchedule.map((row: AmortizationDetail) => ({ label: formatDate(row.date), value: stringToNum(row.totalInterest), labelComponent: () => customLabel('') }));
+    const data3: DataPoint[] = amortizationSchedule.map((row: AmortizationDetail) => ({ label: formatDate(row.date), value: stringToNum(row.remainingBalance), labelComponent: () => customLabel('') }));
+
+    const [ principalPaid, setPrincipalPaid ] = useState(formatAmount(data[0].value));
+    const [ interestPaid, setInterestPaid ] = useState(formatAmount(data2[0].value));
+    const [ loanBalance, setLoanBalance ] = useState(formatAmount(data3[0].value));
+
+    const maxValue = (value1: number, value2: number) => {
+        return value1 > value2 ? value1 : value2;
+    };
+
     return (
         <ScrollView px={2} _dark={{ bg: 'blueGray.900' }} _light={{ bg: 'blueGray.50' }}>
             <ToggleDarkMode/>
             <Center>
                 <Heading>Mortgage Loan Cost</Heading>
-                <Box w='100%' h={240} my={1} mx='auto'>
+                <Box w='100%' h={250} my={1} mx='auto'>
                     <LineChart
                         data={data}
                         data2={data2} 
                         data3={data3}
-                        maxValue={data3[data3.length - 1].value}
+                        maxValue={maxValue(data[0].value + data3[0].value, data2[data2.length-1].value)}
+                        noOfSections={4}
                         curved
                         initialSpacing={0}
+                        spacing={1}
                         color1='deepskyblue'
                         color2='lightskyblue'
                         color3='lightsteelblue'
@@ -73,31 +73,28 @@ const CostScreen = (): JSX.Element => {
                         xAxisColor='#cbd5e1'
                         yAxisTextStyle={{color: textColor}}
                         hideDataPoints
-                        hideRules
                         //hideYAxisText
                         thickness={4}
+                        rulesColor='#cbd5e1'
                         rulesType='solid'
                         yAxisLabelPrefix='$'
-                        yAxisLabelSuffix='K'
                         isAnimated
-                        animateOnDataChange
-                        animationDuration={1000}
-                        onDataChangeAnimationDuration={300}
+                        animationDuration={600}
                         pointerConfig={{
-                            pointerStripColor: '#cbd5e1',
+                            pointerStripColor: textColor,
                             pointerStripWidth: 3,
-                            pointerColor: '#cbd5e1',
+                            pointerColor: textColor,
                             radius: 4,
                             pointerLabelWidth: 100,
                             pointerLabelHeight: 90,
                             pointerLabelComponent: (items: any) => {
-                                setPrincipalPaid(items[0].value);
-                                setInterestPaid(items[1].value);
-                                setLoanBalance(items[2].value);
+                                setPrincipalPaid(formatAmount(items[0].value));
+                                setInterestPaid(formatAmount(items[1].value));
+                                setLoanBalance(formatAmount(items[2].value));
                                 return (
                                     <View p={2} shadow={3} rounded='md' justifyContent='center' _dark={{ bg: 'blueGray.800' }} _light={{ bg: 'white' }}>
                                         <Text textAlign='center'>
-                                            {items[0].date}
+                                            {items[0].label}
                                         </Text>
                                     </View>
                                 );
@@ -133,28 +130,28 @@ const CostScreen = (): JSX.Element => {
                 <Box m={1} w={['45%', '45%', '150']} rounded='xl' shadow={3} _dark={{ bg: 'blueGray.800' }} _light={{ bg: 'white' }}>
                     <VStack p={3}>
                         <Center mb={2}><FontAwesome5 name='hand-holding-usd' size={32} color={iconColor}/></Center>
-                        <Heading textAlign='center'>$315,000</Heading>
+                        <Heading textAlign='center'>${loanAmount}</Heading>
                         <Text textAlign='center'>Loan amount</Text>
                     </VStack>
                 </Box>
                 <Box m={1} w={['45%', '45%', '150']} rounded='xl' shadow={3} _dark={{ bg: 'blueGray.800' }} _light={{ bg: 'white' }}>
                     <VStack p={3}>
                     <Center mb={2}><MaterialCommunityIcons name='trending-up' size={32} color={iconColor}/></Center>
-                        <Heading textAlign='center'>$346,772</Heading>
+                        <Heading textAlign='center'>${totalInterest}</Heading>
                         <Text textAlign='center'>Total interest paid</Text>
                     </VStack>
                 </Box>
                 <Box m={1} w={['45%', '45%', '150']} rounded='xl' shadow={3} _dark={{ bg: 'blueGray.800' }} _light={{ bg: 'white' }}>
                     <VStack p={3}>
                     <Center mb={2}><MaterialCommunityIcons name='cash-multiple' size={32} color={iconColor}/></Center>
-                        <Heading textAlign='center'>$661,772</Heading>
+                        <Heading textAlign='center'>${loanCost}</Heading>
                         <Text textAlign='center'>Total cost of loan</Text>
                     </VStack>
                 </Box>
                 <Box m={1} w={['45%', '45%', '150']} rounded='xl' shadow={3} _dark={{ bg: 'blueGray.800' }} _light={{ bg: 'white' }}>
                     <VStack p={3}>
                         <Center mb={2}><MaterialCommunityIcons name='calendar-check' size={32} color={iconColor}/></Center>
-                        <Heading textAlign='center'>08/2052</Heading>
+                        <Heading textAlign='center'>{payoffDate}</Heading>
                         <Text textAlign='center'>Payoff date</Text>
                     </VStack>
                 </Box>

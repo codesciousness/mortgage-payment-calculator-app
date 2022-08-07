@@ -1,7 +1,12 @@
 import React from 'react';
 import { NativeBaseProvider } from 'native-base';
-import AppNavigator from './components/AppNavigator';
+import { Provider } from 'react-redux';
+import { store } from './app/store';
+import { AppRegistry } from 'react-native';
+import { Provider as PaperProvider } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as app from './app.json';
+import AppNavigator from './components/AppNavigator';
 
 const config = {
   dependencies: {
@@ -12,7 +17,13 @@ const config = {
 export default function App() {
   return (
     <NativeBaseProvider config={config}>
-      <AppNavigator/>
+      <Provider store={store}>
+        <PaperProvider>
+          <AppNavigator/>
+        </PaperProvider>
+      </Provider>
     </NativeBaseProvider>
   );
 };
+
+AppRegistry.registerComponent(app.expo.name, () => App);
