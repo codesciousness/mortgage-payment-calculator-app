@@ -5,9 +5,9 @@ import { useNavigation } from '@react-navigation/native';
 import ToggleDarkMode from './ToggleDarkMode';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { selectHomePrice, selectDownPayment, selectLoanTerm, selectInterestRate, selectPropertyTax, 
-    selectHomeInsurance, selectPMI, selectHOAFees, selectStartDate, setHomePrice, setDownPayment, 
-    setLoanTerm, setInterestRate, setPropertyTax, setHomeInsurance, setPMI, setHOAFees, 
-    setStartDate } from '../loansSlice';
+    selectHomeInsurance, selectPMI, selectHOAFees, selectStartDate, selectMonthlyPayment, 
+    setHomePrice, setDownPayment, setLoanTerm, setInterestRate, setPropertyTax, setHomeInsurance, 
+    setPMI, setHOAFees, setStartDate } from '../loansSlice';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { fromPercent } from '../util/calculations';
 
@@ -21,6 +21,7 @@ const CalculatorScreen = (): JSX.Element => {
     const homeInsurance = useAppSelector(selectHomeInsurance);
     const privateMortgageInsurance = useAppSelector(selectPMI);
     const hoaFees = useAppSelector(selectHOAFees);
+    const monthlyPayment = useAppSelector(selectMonthlyPayment);
     const dispatch = useAppDispatch();
     const { colorMode, toggleColorMode } = useColorMode();
     const iconColor = colorMode === 'light' ? 'black' : 'white';
@@ -31,14 +32,7 @@ const CalculatorScreen = (): JSX.Element => {
     };
 
     const handleHomePriceChange = (value: string) => {
-        if (allNums(value)) {
-            dispatch(setHomePrice(value));
-            if (downPayment) dispatch(setDownPayment(downPayment));
-            if (propertyTax) dispatch(setPropertyTax(propertyTax));
-            if (homeInsurance) dispatch(setHomeInsurance(homeInsurance));
-            if (privateMortgageInsurance) dispatch(setPMI(privateMortgageInsurance));
-            if (hoaFees) dispatch(setHOAFees(hoaFees));
-        };
+        if (allNums(value)) dispatch(setHomePrice(value));
     };
 
     const handleDownPaymentChange = (value: number) => {
@@ -77,7 +71,7 @@ const CalculatorScreen = (): JSX.Element => {
                 <Box py={4} rounded='2xl' shadow={3} _dark={{ bg: 'blueGray.800' }} _light={{ bg: 'white' }}>
                     <Center>
                         <Text mb={2} textAlign='center'>Monthly payment</Text>
-                        <Heading mb={2} size='xl' textAlign='center'>$2,328</Heading>
+                        <Heading mb={2} size='xl' textAlign='center'>${monthlyPayment}</Heading>
                         <Box w='auto' rounded='sm' my={2} bg={{ linearGradient: {colors: ['paleturquoise', 'deepskyblue'], start: [0, 0], end: [1, 0]}}}>
                             <Button 
                                 size='md'

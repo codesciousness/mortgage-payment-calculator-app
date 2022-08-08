@@ -28,18 +28,18 @@ const PayoffScreen = (): JSX.Element => {
                 <Heading textAlign='center'>Amortization Schedule</Heading>
                 <DataTable>
                     <DataTable.Header>
-                        <DataTable.Title style={{flex: 0, width: 60}}><Text>Date</Text></DataTable.Title>
+                        <DataTable.Title style={{flex: 0}}><Text>Date</Text></DataTable.Title>
                         <DataTable.Title numeric><Text>Principal</Text></DataTable.Title>
-                        <DataTable.Title numeric><Text>Interest</Text></DataTable.Title>
+                        <DataTable.Title style={{flex: 0.8}} numeric><Text>Interest</Text></DataTable.Title>
                         <DataTable.Title numeric><Text>Balance</Text></DataTable.Title>
                     </DataTable.Header>
 
-                    {data.length && data.map((row, idx) => 
+                    {data.length && data.slice(page * numberOfItemsPerPage, page * numberOfItemsPerPage + numberOfItemsPerPage).map((row, idx) => 
                         <DataTable.Row key={idx}>
                             <DataTable.Cell style={{flex: 0}}><Text>{row.date}</Text></DataTable.Cell>
                             <DataTable.Cell numeric><Text>${row.principal}</Text></DataTable.Cell>
                             <DataTable.Cell numeric><Text>${row.interest}</Text></DataTable.Cell>
-                            <DataTable.Cell numeric><Text>${row.remainingBalance}</Text></DataTable.Cell>
+                            <DataTable.Cell style={{flex: 1.25}} numeric><Text>${row.remainingBalance}</Text></DataTable.Cell>
                         </DataTable.Row>
                     )}
 

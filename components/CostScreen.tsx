@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Button, Center, Heading, HStack, ScrollView, Text, useColorMode,
     View, VStack } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
@@ -9,7 +9,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { selectLoanAmount, selectTotalInterest, selectLoanCost, selectPayoffDate, 
     selectAmortizationSchedule, AmortizationDetail } from '../loansSlice';
 import { useAppSelector } from '../app/hooks';
-import { stringToNum, formatAmount, formatDate } from '../util/calculations';
+import { stringToNum, formatAmount, formatDate, formatCash } from '../util/calculations';
 
 interface DataPoint {
     label: string;
@@ -47,12 +47,18 @@ const CostScreen = (): JSX.Element => {
     const [ interestPaid, setInterestPaid ] = useState(formatAmount(data2[0].value));
     const [ loanBalance, setLoanBalance ] = useState(formatAmount(data3[0].value));
 
-    const maxValue = (value1: number, value2: number) => {
-        return value1 > value2 ? value1 : value2;
-    };
+    const maxValue = (value1: number, value2: number) => value1 > value2 ? value1 : value2;
+
+    const YAxisText = (num: number): string[] => [formatCash(0), formatCash(num * 0.25), formatCash(num/2), formatCash(num * 0.75), formatCash(num)];
+
+    useEffect(() => {
+        setPrincipalPaid(formatAmount(data[0].value));
+        setInterestPaid(formatAmount(data2[0].value));
+        setLoanBalance(formatAmount(data3[0].value));
+    }, [amortizationSchedule]);
 
     return (
-        <ScrollView px={2} _dark={{ bg: 'blueGray.900' }} _light={{ bg: 'blueGray.50' }}>
+        <ScrollView px={1} _dark={{ bg: 'blueGray.900' }} _light={{ bg: 'blueGray.50' }}>
             <ToggleDarkMode/>
             <Center>
                 <Heading>Mortgage Loan Cost</Heading>
@@ -64,6 +70,7 @@ const CostScreen = (): JSX.Element => {
                         maxValue={maxValue(data[0].value + data3[0].value, data2[data2.length-1].value)}
                         noOfSections={4}
                         curved
+                        adjustToWidth
                         initialSpacing={0}
                         spacing={1}
                         color1='deepskyblue'
@@ -71,9 +78,10 @@ const CostScreen = (): JSX.Element => {
                         color3='lightsteelblue'
                         yAxisColor='#cbd5e1'
                         xAxisColor='#cbd5e1'
+                        yAxisLabelTexts={YAxisText(maxValue(data[0].value + data3[0].value, data2[data2.length-1].value))}
                         yAxisTextStyle={{color: textColor}}
+                        yAxisLabelWidth={60}
                         hideDataPoints
-                        //hideYAxisText
                         thickness={4}
                         rulesColor='#cbd5e1'
                         rulesType='solid'
