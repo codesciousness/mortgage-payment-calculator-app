@@ -32,6 +32,7 @@
     "react-native": "0.64.3",
     "react-native-gifted-charts": "^1.2.41",
     "react-native-paper": "^4.12.4",
+    "react-native-responsive-dimensions": "^3.1.1",
     "react-native-safe-area-context": "3.3.2",
     "react-native-svg": "12.1.1",
     "react-native-web": "0.17.1",

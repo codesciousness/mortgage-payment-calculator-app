@@ -3,6 +3,7 @@ import { Box, Button, Center, Heading, HStack, ScrollView, Text, useColorMode,
     View, VStack } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
 import { LineChart } from 'react-native-gifted-charts';
+import { useResponsiveScreenHeight, useResponsiveScreenWidth } from 'react-native-responsive-dimensions';
 import ToggleDarkMode from './ToggleDarkMode';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -23,6 +24,8 @@ const CostScreen = (): JSX.Element => {
     const loanCost = useAppSelector(selectLoanCost);
     const payoffDate = useAppSelector(selectPayoffDate);
     const amortizationSchedule = useAppSelector(selectAmortizationSchedule);
+    const screenHeight = useResponsiveScreenHeight(25);
+    const screenWidth = useResponsiveScreenWidth(90);
     const { colorMode, toggleColorMode } = useColorMode();
     const borderBottomColor = colorMode === 'light' ? 'blueGray.200' : 'blueGray.700';
     const textColor = colorMode === 'light' ? '#0f172a' : 'white';
@@ -32,8 +35,8 @@ const CostScreen = (): JSX.Element => {
     const customLabel = (value: string) => <Text w={10} textAlign='center'>{value.slice(3)}</Text>;
     const data: DataPoint[] = amortizationSchedule.map((row: AmortizationDetail, idx: number) => {
         let dataPoint: DataPoint;
-        if ((idx + 1) % 120 === 0) {
-            dataPoint = { label: formatDate(row.date), value: stringToNum(row.totalPrincipal), labelComponent: () => customLabel('') };
+        if (idx === 0 || idx % 120 === 0) {
+            dataPoint = { label: formatDate(row.date), value: stringToNum(row.totalPrincipal), labelComponent: () => customLabel(row.date) };
         }
         else {
             dataPoint = { label: formatDate(row.date), value: stringToNum(row.totalPrincipal), labelComponent: () => customLabel('') };
@@ -58,24 +61,24 @@ const CostScreen = (): JSX.Element => {
     }, [amortizationSchedule]);
 
     return (
-        <ScrollView px={1} _dark={{ bg: 'blueGray.900' }} _light={{ bg: 'blueGray.50' }}>
+        <ScrollView px={[1, 1, 2]} _dark={{ bg: 'blueGray.900' }} _light={{ bg: 'blueGray.50' }}>
             <ToggleDarkMode/>
             <Center>
                 <Heading>Mortgage Loan Cost</Heading>
-                <Box w='100%' h={250} my={1} mx='auto'>
+                <Box w='100%' mt={2} mb={[4, 6, 10]} mx='auto'>
                     <LineChart
                         data={data}
                         data2={data2} 
                         data3={data3}
                         maxValue={maxValue(data[0].value + data3[0].value, data2[data2.length-1].value)}
                         noOfSections={4}
-                        curved
+                        width={screenWidth}
+                        height={screenHeight}
                         adjustToWidth
-                        initialSpacing={0}
-                        spacing={1}
-                        color1='deepskyblue'
-                        color2='lightskyblue'
-                        color3='lightsteelblue'
+                        initialSpacing={1}
+                        color1='steelblue'
+                        color2='deepskyblue'
+                        color3='powderblue'
                         yAxisColor='#cbd5e1'
                         xAxisColor='#cbd5e1'
                         yAxisLabelTexts={YAxisText(maxValue(data[0].value + data3[0].value, data2[data2.length-1].value))}
@@ -111,52 +114,52 @@ const CostScreen = (): JSX.Element => {
                     />
                 </Box>
             </Center>
-            <VStack px={2}>
-                <HStack w='100%' px={2} py={4} borderBottomWidth={1} borderBottomColor={borderBottomColor} justifyContent='space-between' alignItems='center'>
+            <VStack px={[2, 2, 4]}>
+                <HStack w='100%' px={2} py={[4, 4, 6]} borderBottomWidth={1} borderBottomColor={borderBottomColor} justifyContent='space-between' alignItems='center'>
                     <HStack alignItems='center'>
-                        <Box bg='deepskyblue' w={4} h={4} borderRadius={50} mr={2}></Box>
+                        <Box bg='steelblue' w={4} h={4} borderRadius={50} mr={2}></Box>
                         <Text>Principal paid</Text>
                     </HStack>
                     <Text>${principalPaid}</Text>
                 </HStack>
-                <HStack w='100%' px={2} py={4} borderBottomWidth={1} borderBottomColor={borderBottomColor} justifyContent='space-between' alignItems='center'>
+                <HStack w='100%' px={2} py={[4, 4, 6]} borderBottomWidth={1} borderBottomColor={borderBottomColor} justifyContent='space-between' alignItems='center'>
                     <HStack alignItems='center'>
-                        <Box bg='lightskyblue' w={4} h={4} borderRadius={50} mr={2}></Box>
+                        <Box bg='deepskyblue' w={4} h={4} borderRadius={50} mr={2}></Box>
                         <Text>Interest paid</Text>
                     </HStack>
                     <Text>${interestPaid}</Text>
                 </HStack>
-                <HStack w='100%' px={2} py={4} borderBottomWidth={1} borderBottomColor={borderBottomColor} justifyContent='space-between' alignItems='center'>
+                <HStack w='100%' px={2} py={[4, 4, 6]} borderBottomWidth={1} borderBottomColor={borderBottomColor} justifyContent='space-between' alignItems='center'>
                     <HStack alignItems='center'>
-                        <Box bg='lightsteelblue' w={4} h={4} borderRadius={50} mr={2}></Box>
+                        <Box bg='powderblue' w={4} h={4} borderRadius={50} mr={2}></Box>
                         <Text>Loan balance</Text>
                     </HStack>
                     <Text>${loanBalance}</Text>
                 </HStack>
             </VStack>
-            <HStack py={2} my={2} mx='auto' justifyContent='center' alignItems='center' flexWrap='wrap' w={['100%', '100%', '75%']} maxW={800}>
-                <Box m={1} w={['45%', '45%', '150']} rounded='xl' shadow={3} _dark={{ bg: 'blueGray.800' }} _light={{ bg: 'white' }}>
+            <HStack my={[4, 4, 6]} mx='auto' justifyContent='center' alignItems='center' flexWrap='wrap' w='100%'>
+                <Box m={1} w={['45%', '45%', '24%']} rounded='xl' shadow={3} _dark={{ bg: 'blueGray.800' }} _light={{ bg: 'white' }}>
                     <VStack p={3}>
                         <Center mb={2}><FontAwesome5 name='hand-holding-usd' size={32} color={iconColor}/></Center>
                         <Heading textAlign='center'>${loanAmount}</Heading>
                         <Text textAlign='center'>Loan amount</Text>
                     </VStack>
                 </Box>
-                <Box m={1} w={['45%', '45%', '150']} rounded='xl' shadow={3} _dark={{ bg: 'blueGray.800' }} _light={{ bg: 'white' }}>
+                <Box m={1} w={['45%', '45%', '24%']} rounded='xl' shadow={3} _dark={{ bg: 'blueGray.800' }} _light={{ bg: 'white' }}>
                     <VStack p={3}>
                     <Center mb={2}><MaterialCommunityIcons name='trending-up' size={32} color={iconColor}/></Center>
                         <Heading textAlign='center'>${totalInterest}</Heading>
                         <Text textAlign='center'>Total interest paid</Text>
                     </VStack>
                 </Box>
-                <Box m={1} w={['45%', '45%', '150']} rounded='xl' shadow={3} _dark={{ bg: 'blueGray.800' }} _light={{ bg: 'white' }}>
+                <Box m={1} w={['45%', '45%', '24%']} rounded='xl' shadow={3} _dark={{ bg: 'blueGray.800' }} _light={{ bg: 'white' }}>
                     <VStack p={3}>
                     <Center mb={2}><MaterialCommunityIcons name='cash-multiple' size={32} color={iconColor}/></Center>
                         <Heading textAlign='center'>${loanCost}</Heading>
                         <Text textAlign='center'>Total cost of loan</Text>
                     </VStack>
                 </Box>
-                <Box m={1} w={['45%', '45%', '150']} rounded='xl' shadow={3} _dark={{ bg: 'blueGray.800' }} _light={{ bg: 'white' }}>
+                <Box m={1} w={['45%', '45%', '24%']} rounded='xl' shadow={3} _dark={{ bg: 'blueGray.800' }} _light={{ bg: 'white' }}>
                     <VStack p={3}>
                         <Center mb={2}><MaterialCommunityIcons name='calendar-check' size={32} color={iconColor}/></Center>
                         <Heading textAlign='center'>{payoffDate}</Heading>
@@ -170,7 +173,7 @@ const CostScreen = (): JSX.Element => {
                     size='md'
                     variant='outline'
                     _text={{color: textColor}}
-                    onPress={() => nav.navigate('Payoff')}
+                    onPress={() => nav.navigate('Payoff', { id: 'payoff' })}
                     endIcon={<MaterialCommunityIcons name="arrow-right-drop-circle-outline" size={24} color={textColor}/>}
                 >
                     SEE PAYOFF

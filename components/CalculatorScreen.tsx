@@ -67,8 +67,8 @@ const CalculatorScreen = (): JSX.Element => {
     return (
         <ScrollView px={3} _dark={{ bg: 'blueGray.900' }} _light={{ bg: 'blueGray.50' }}>
             <ToggleDarkMode/>
-            <VStack space={2} w='95%' m='auto'>
-                <Box py={4} rounded='2xl' shadow={3} _dark={{ bg: 'blueGray.800' }} _light={{ bg: 'white' }}>
+            <VStack space={[2, 3, 4]} w='95%' m='auto'>
+                <Box py={[4, 4, 6]} rounded='2xl' shadow={3} _dark={{ bg: 'blueGray.800' }} _light={{ bg: 'white' }}>
                     <Center>
                         <Text mb={2} textAlign='center'>Monthly payment</Text>
                         <Heading mb={2} size='xl' textAlign='center'>${monthlyPayment}</Heading>
@@ -77,7 +77,7 @@ const CalculatorScreen = (): JSX.Element => {
                                 size='md'
                                 variant='outline'
                                 _text={{color: 'blueGray.900'}}
-                                onPress={() => nav.navigate('Payment')}
+                                onPress={() => nav.navigate('Payment', { id: 'payment' })}
                                 endIcon={<MaterialCommunityIcons name="arrow-right-drop-circle-outline" size={24} color='#0f172a'/>}
                             >
                                 SEE DETAILS
