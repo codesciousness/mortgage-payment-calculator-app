@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import mobileAds from 'react-native-google-mobile-ads';
 import { Ionicons } from '@expo/vector-icons';
 import CalculatorScreen from './CalculatorScreen';
 import PaymentScreen from './PaymentScreen';
@@ -8,6 +9,8 @@ import CostScreen from './CostScreen';
 import PayoffScreen from './PayoffScreen';
 
 const Tab = createBottomTabNavigator();
+
+mobileAds().initialize()
 
 const AppNavigator = (): JSX.Element => {
 

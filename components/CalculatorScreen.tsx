@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box, Button, Center, Heading, HStack, Input, InputGroup, InputLeftAddon, ScrollView,
     Slider, Text, useColorMode, VStack } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
+import { useInterstitialAd, TestIds } from 'react-native-google-mobile-ads';
 import ToggleDarkMode from './ToggleDarkMode';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { selectHomePrice, selectDownPayment, selectLoanTerm, selectInterestRate, selectPropertyTax, 
@@ -10,6 +11,8 @@ import { selectHomePrice, selectDownPayment, selectLoanTerm, selectInterestRate,
     setPMI, setHOAFees, setStartDate } from '../loansSlice';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { fromPercent } from '../util/calculations';
+
+//const adUnitId = __DEV__ ? TestIds.INTERSTITIAL : 'ca-app-pub-7298976665565402~8630267393';
 
 const CalculatorScreen = (): JSX.Element => {
     const homePrice = useAppSelector(selectHomePrice);
@@ -23,6 +26,10 @@ const CalculatorScreen = (): JSX.Element => {
     const hoaFees = useAppSelector(selectHOAFees);
     const monthlyPayment = useAppSelector(selectMonthlyPayment);
     const dispatch = useAppDispatch();
+    const { isLoaded, isClosed, load, show } = useInterstitialAd(TestIds.INTERSTITIAL, {
+        requestNonPersonalizedAdsOnly: true,
+        keywords: ['mortgage loan', 'real estate']
+    });
     const { colorMode, toggleColorMode } = useColorMode();
     const iconColor = colorMode === 'light' ? 'black' : 'white';
     const nav = useNavigation();
@@ -64,6 +71,21 @@ const CalculatorScreen = (): JSX.Element => {
         if (allNums(value)) dispatch(setHOAFees(value));
     };
 
+    const displayAd = () => {
+        if (isLoaded) show();
+        else nav.navigate('Payment', { id: 'payment' });
+    };
+
+    useEffect(() => {
+        load();
+    }, [load]);
+    
+    useEffect(() => {
+        if (isClosed) {
+            nav.navigate('Payment', { id: 'payment' });
+        }
+    }, [isClosed, nav]);
+
     return (
         <ScrollView px={3} _dark={{ bg: 'blueGray.900' }} _light={{ bg: 'blueGray.50' }}>
             <ToggleDarkMode/>
@@ -77,7 +99,7 @@ const CalculatorScreen = (): JSX.Element => {
                                 size='md'
                                 variant='outline'
                                 _text={{color: 'blueGray.900'}}
-                                onPress={() => nav.navigate('Payment', { id: 'payment' })}
+                                onPress={displayAd}
                                 endIcon={<MaterialCommunityIcons name="arrow-right-drop-circle-outline" size={24} color='#0f172a'/>}
                             >
                                 SEE DETAILS

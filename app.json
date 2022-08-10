@@ -10,6 +10,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "owner": "codesciousness",
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -23,10 +24,15 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.codesciousness.mortgagepaymentcalculatorapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     }
+  },
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-7298976665565402~8630267393",
+    "ios_app_id": "ca-app-pub-7298976665565402~8630267393"
   }
 }
