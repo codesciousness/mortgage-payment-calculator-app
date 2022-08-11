@@ -1,7 +1,7 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import React, { useEffect } from 'react';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import mobileAds from 'react-native-google-mobile-ads';
+import { useInterstitialAd, TestIds } from 'react-native-google-mobile-ads';
 import { Ionicons } from '@expo/vector-icons';
 import CalculatorScreen from './CalculatorScreen';
 import PaymentScreen from './PaymentScreen';
@@ -10,9 +10,29 @@ import PayoffScreen from './PayoffScreen';
 
 const Tab = createBottomTabNavigator();
 
-mobileAds().initialize()
+//const adUnitId = __DEV__ ? TestIds.INTERSTITIAL : 'ca-app-pub-7298976665565402~8630267393';
 
 const AppNavigator = (): JSX.Element => {
+    const { isLoaded, isClosed, load, show } = useInterstitialAd(TestIds.INTERSTITIAL, {
+        requestNonPersonalizedAdsOnly: true,
+        keywords: ['mortgage loan', 'real estate']
+    });
+    const nav = useNavigation();
+
+    const displayAd = () => {
+        if (isLoaded) show();
+        else nav.navigate('Payment', { id: 'payment' });
+    };
+
+    useEffect(() => {
+        load();
+    }, [load]);
+    
+    useEffect(() => {
+        if (isClosed) {
+            nav.navigate('Payment', { id: 'payment' });
+        }
+    }, [isClosed, nav]);
 
     return (
         <NavigationContainer>
@@ -40,7 +60,14 @@ const AppNavigator = (): JSX.Element => {
                 })}
             >
                 <Tab.Screen name='Calculator' component={CalculatorScreen}/>
-                <Tab.Screen name='Payment' component={PaymentScreen}/>
+                <Tab.Screen 
+                    name='Payment' 
+                    component={PaymentScreen} 
+                    listeners={{tabPress: (e) => {
+                        e.preventDefault();
+                        displayAd();
+                    }}}
+                />
                 <Tab.Screen name='Cost' component={CostScreen}/>
                 <Tab.Screen name='Payoff' component={PayoffScreen}/>
             </Tab.Navigator>

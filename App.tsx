@@ -4,9 +4,12 @@ import { Provider } from 'react-redux';
 import { store } from './app/store';
 import { AppRegistry } from 'react-native';
 import { Provider as PaperProvider } from 'react-native-paper';
+import mobileAds from 'react-native-google-mobile-ads';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as app from './app.json';
 import AppNavigator from './components/AppNavigator';
+
+mobileAds().initialize();
 
 const config = {
   dependencies: {
