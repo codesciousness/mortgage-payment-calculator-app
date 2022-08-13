@@ -4,7 +4,8 @@ import { Box, Button, Center, Heading, HStack, ScrollView, Text, useColorMode,
 import { useNavigation } from '@react-navigation/native';
 import { LineChart } from 'react-native-gifted-charts';
 import { useResponsiveScreenHeight, useResponsiveScreenWidth } from 'react-native-responsive-dimensions';
-import ToggleDarkMode from './ToggleDarkMode';
+import ToggleDarkMode from '../components/ToggleDarkMode';
+import EmailModal from '../components/EmailModal';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { selectLoanAmount, selectTotalInterest, selectLoanCost, selectPayoffDate, 
@@ -137,6 +138,18 @@ const CostScreen = (): JSX.Element => {
                     <Text>${loanBalance}</Text>
                 </HStack>
             </VStack>
+            <HStack space={[2, 3, 4]} mt={[5, 6, 8]} justifyContent='center' alignItems='center'>
+                <EmailModal/>
+                <Button
+                    size='md'
+                    variant='outline'
+                    _text={{color: textColor}}
+                    onPress={() => nav.navigate('Payoff', { id: 'payoff' })}
+                    endIcon={<MaterialCommunityIcons name="arrow-right-drop-circle-outline" size={24} color={textColor}/>}
+                >
+                    SEE PAYOFF
+                </Button>
+            </HStack>
             <HStack my={[4, 4, 6]} mx='auto' justifyContent='center' alignItems='center' flexWrap='wrap' w='100%'>
                 <Box m={1} w={['45%', '45%', '24%']} rounded='xl' shadow={3} _dark={{ bg: 'blueGray.800' }} _light={{ bg: 'white' }}>
                     <VStack p={3}>
@@ -167,18 +180,6 @@ const CostScreen = (): JSX.Element => {
                     </VStack>
                 </Box>
             </HStack>
-            <Center>
-                <Button
-                    mb={4}
-                    size='md'
-                    variant='outline'
-                    _text={{color: textColor}}
-                    onPress={() => nav.navigate('Payoff', { id: 'payoff' })}
-                    endIcon={<MaterialCommunityIcons name="arrow-right-drop-circle-outline" size={24} color={textColor}/>}
-                >
-                    SEE PAYOFF
-                </Button>
-            </Center>
         </ScrollView>
     );
 };

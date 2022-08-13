@@ -3,7 +3,7 @@ import { Box, Button, Center, Heading, ScrollView, Text, VStack } from 'native-b
 import { useNavigation } from '@react-navigation/native';
 import { DataTable } from 'react-native-paper';
 import { useResponsiveScreenWidth } from 'react-native-responsive-dimensions';
-import ToggleDarkMode from './ToggleDarkMode';
+import ToggleDarkMode from '../components/ToggleDarkMode';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { selectAmortizationSchedule, AmortizationDetail } from '../loansSlice';
 import { useAppSelector } from '../app/hooks';

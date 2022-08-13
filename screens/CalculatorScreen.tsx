@@ -3,7 +3,7 @@ import { Box, Button, Center, Heading, HStack, Input, InputGroup, InputLeftAddon
     Slider, Text, useColorMode, VStack } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
 import { useInterstitialAd, TestIds } from 'react-native-google-mobile-ads';
-import ToggleDarkMode from './ToggleDarkMode';
+import ToggleDarkMode from '../components/ToggleDarkMode';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { selectHomePrice, selectDownPayment, selectLoanTerm, selectInterestRate, selectPropertyTax, 
     selectHomeInsurance, selectPMI, selectHOAFees, selectStartDate, selectMonthlyPayment, 
@@ -34,9 +34,7 @@ const CalculatorScreen = (): JSX.Element => {
     const iconColor = colorMode === 'light' ? 'black' : 'white';
     const nav = useNavigation();
 
-    const allNums = (value: string) => {
-        return value.split('').filter(char => char !== '.' && char !== ',').map(char => parseFloat(char)).every(char => !isNaN(char));
-    };
+    const allNums = (value: string) => value.split('').filter(char => char !== '.' && char !== ',').map(char => parseFloat(char)).every(char => !isNaN(char));
 
     const handleHomePriceChange = (value: string) => {
         if (allNums(value)) dispatch(setHomePrice(value));
@@ -51,9 +49,7 @@ const CalculatorScreen = (): JSX.Element => {
 
     const handleLoanTermChange = (value: number) => dispatch(setLoanTerm(value));
 
-    const handleStartDateChange = (value: string) => {
-        dispatch(setStartDate(value));
-    };
+    const handleStartDateChange = (value: string) => dispatch(setStartDate(value));
 
     const handlePropertyTaxChange = (value: string) => {
         if (allNums(value)) dispatch(setPropertyTax(value));

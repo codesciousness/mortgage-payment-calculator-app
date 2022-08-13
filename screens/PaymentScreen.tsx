@@ -4,7 +4,8 @@ import { Box, Button, Center, Heading, HStack, ScrollView, Text,
 import { useNavigation } from '@react-navigation/native';
 import { PieChart } from 'react-native-gifted-charts';
 import { useResponsiveScreenWidth } from 'react-native-responsive-dimensions';
-import ToggleDarkMode from './ToggleDarkMode';
+import ToggleDarkMode from '../components/ToggleDarkMode';
+import EmailModal from '../components/EmailModal';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { selectPropertyTax, selectHomeInsurance, selectPMI, selectHOAFees, 
     selectMortgagePayment, selectMonthlyPayment } from '../loansSlice';
@@ -85,9 +86,9 @@ const PaymentScreen = (): JSX.Element => {
                     <Text>${hoaFees}</Text>
                 </HStack>
             </VStack>
-            <Center>
+            <HStack space={[2, 3, 4]} mt={[2, 4, 6]} justifyContent='center' alignItems='center'>
+                <EmailModal/>
                 <Button
-                    mt={[2, 4, 6]}
                     size='md'
                     variant='outline'
                     _text={{color: textColor}}
@@ -96,7 +97,7 @@ const PaymentScreen = (): JSX.Element => {
                 >
                     SEE COST
                 </Button>
-            </Center>
+            </HStack>
         </ScrollView>
     );
 };
