@@ -13,6 +13,7 @@ const EmailModal = (): JSX.Element => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [showModal, setShowModal] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
     const [success, setSuccess] = useState(false);
     const homePrice = useAppSelector(selectHomePrice);
@@ -78,6 +79,8 @@ const EmailModal = (): JSX.Element => {
     const handleNameChange = (value: string) => setName(value);
     const handleEmailChange = (value: string) => setEmail(value);
     const handlePress = async() => {
+        setError(false);
+        setSuccess(false);
         if (!name || !email) {
             setAlert(status[1]);
             setError(true);
@@ -86,23 +89,30 @@ const EmailModal = (): JSX.Element => {
         let newLoan;
         const Loans = collection(db, 'loans');
         try {
+            setLoading(true);
             newLoan = await addDoc(Loans, loan);
         }
         catch(err) {
+            setLoading(false);
             setAlert(status[2]);
             setError(true);
             return;
         };
         if (newLoan) {
+            setLoading(false);
             setError(false);
             setAlert(status[3]);
             setSuccess(true);
+            setName('');
+            setEmail('');
         };
+        setLoading(false);
     };
 
     const clear = () => {
         setName('');
         setEmail('');
+        setLoading(false);
         setError(false);
         setSuccess(false);
         setAlert(status[0]);
@@ -119,8 +129,8 @@ const EmailModal = (): JSX.Element => {
                 <Modal.Content maxW='400px'>
                     <Modal.CloseButton/>
                     <Modal.Header>Email your loan summary!</Modal.Header>
-                    <Modal.Body>
-                        <Collapse isOpen={success || error}>
+                    <Modal.Body mb={2}>
+                        <Collapse isOpen={success || error} my={1}>
                             <Alert w='100%' status={alert.status}>
                                 <VStack space={2} flexShrink={1} w='100%'>
                                     <HStack flexShrink={1} space={2} justifyContent='space-between'>
@@ -135,7 +145,7 @@ const EmailModal = (): JSX.Element => {
                                 </VStack>
                             </Alert>
                         </Collapse>
-                        <VStack my={2} space={[4, 4, 6]}>
+                        <VStack my={1} space={4}>
                             <Box>
                                 <Text mb={1}>Name</Text>
                                 <Input placeholder='Name' value={name} onChangeText={handleNameChange}/>
@@ -151,7 +161,15 @@ const EmailModal = (): JSX.Element => {
                             <Button variant='ghost' colorScheme='blueGray' onPress={() => setShowModal(false)}>
                                 CANCEL
                             </Button>
-                            <Button px={4} _text={{color: textColor}} bg='lightBlue.300' onPress={handlePress}>
+                            <Button
+                                px={4}
+                                _text={{color: textColor}}
+                                bg='lightBlue.300'
+                                onPress={handlePress}
+                                isLoading={loading}
+                                spinnerPlacement='end'
+                                isLoadingText='SENDING'
+                            >
                                 SEND
                             </Button>
                         </Button.Group>
