@@ -4,18 +4,14 @@ import { Alert, Box, Button, Center, CloseIcon, Collapse, HStack, IconButton, In
 import { selectHomePrice, selectDownPayment, selectLoanTerm, selectInterestRate, selectPropertyTax, 
     selectHomeInsurance, selectPMI, selectHOAFees, selectStartDate, selectMortgagePayment, 
     selectMonthlyPayment, selectLoanAmount, selectTotalInterest, selectLoanCost, selectPayoffDate, 
-    selectAmortizationSchedule } from '../loansSlice';
-import { useAppSelector } from '../app/hooks';
-import { collection, addDoc } from 'firebase/firestore';
-import { db } from '../firebase';
+    saveLoan, selectSavingLoan, selectSaveLoanSuccess, selectSaveLoanError, clearStatusUpdates 
+    } from '../loansSlice';
+import { useAppSelector, useAppDispatch } from '../app/hooks';
 
 const EmailModal = (): JSX.Element => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [showModal, setShowModal] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(false);
-    const [success, setSuccess] = useState(false);
     const homePrice = useAppSelector(selectHomePrice);
     const downPayment = useAppSelector(selectDownPayment);
     const loanTerm = useAppSelector(selectLoanTerm);
@@ -31,7 +27,10 @@ const EmailModal = (): JSX.Element => {
     const loanCost = useAppSelector(selectLoanCost);
     const totalInterest = useAppSelector(selectTotalInterest);
     const payoffDate = useAppSelector(selectPayoffDate);
-    const amortizationSchedule = useAppSelector(selectAmortizationSchedule);
+    const savingLoan = useAppSelector(selectSavingLoan);
+    const saveLoanSuccess = useAppSelector(selectSaveLoanSuccess);
+    const saveLoanError = useAppSelector(selectSaveLoanError);
+    const dispatch = useAppDispatch();
     const { colorMode, toggleColorMode } = useColorMode();
     const textColor = colorMode === 'light' ? '#0f172a' : 'white';
 
@@ -42,11 +41,7 @@ const EmailModal = (): JSX.Element => {
         },
         {
             status: 'error',
-            msg: 'Please provide a name and email address.'
-        },
-        {
-            status: 'error',
-            msg: 'Submission error. Please try again.'
+            msg: saveLoanError
         },
         {
             status: 'success',
@@ -72,55 +67,38 @@ const EmailModal = (): JSX.Element => {
         loanAmount,
         loanCost,
         totalInterest,
-        payoffDate,
-        amortizationSchedule
+        payoffDate
     };
 
-    const handleNameChange = (value: string) => setName(value);
-    const handleEmailChange = (value: string) => setEmail(value);
-    const handlePress = async() => {
-        setError(false);
-        setSuccess(false);
-        if (!name || !email) {
-            setAlert(status[1]);
-            setError(true);
-            return;
-        };
-        let newLoan;
-        const Loans = collection(db, 'loans');
-        try {
-            setLoading(true);
-            newLoan = await addDoc(Loans, loan);
-        }
-        catch(err) {
-            setLoading(false);
-            setAlert(status[2]);
-            setError(true);
-            return;
-        };
-        if (newLoan) {
-            setLoading(false);
-            setError(false);
-            setAlert(status[3]);
-            setSuccess(true);
-            setName('');
-            setEmail('');
-        };
-        setLoading(false);
+    const submitSuccess = () => {
+        setAlert(status[2]);
+        setName('');
+        setEmail('');
+    };
+
+    const submitFail = () => {
+        setAlert(status[1]);
     };
 
     const clear = () => {
-        setName('');
-        setEmail('');
-        setLoading(false);
-        setError(false);
-        setSuccess(false);
+        dispatch(clearStatusUpdates());
         setAlert(status[0]);
     };
 
+    const handleNameChange = (value: string) => setName(value);
+    const handleEmailChange = (value: string) => setEmail(value.trim());
+    const handlePress = () => dispatch(saveLoan(loan));
+
     useEffect(() => {
+        setName('');
+        setEmail('');
         clear();
     }, [showModal]);
+
+    useEffect(() => {
+        if (saveLoanError) submitFail();
+        if (saveLoanSuccess) submitSuccess();
+    }, [saveLoanError, saveLoanSuccess]);
 
     return (
         <Center>
@@ -130,7 +108,7 @@ const EmailModal = (): JSX.Element => {
                     <Modal.CloseButton/>
                     <Modal.Header>Email your loan summary!</Modal.Header>
                     <Modal.Body mb={2}>
-                        <Collapse isOpen={success || error} my={1}>
+                        <Collapse isOpen={saveLoanSuccess || saveLoanError} my={1}>
                             <Alert w='100%' status={alert.status}>
                                 <VStack space={2} flexShrink={1} w='100%'>
                                     <HStack flexShrink={1} space={2} justifyContent='space-between'>
@@ -166,7 +144,7 @@ const EmailModal = (): JSX.Element => {
                                 _text={{color: textColor}}
                                 bg='lightBlue.300'
                                 onPress={handlePress}
-                                isLoading={loading}
+                                isLoading={savingLoan}
                                 spinnerPlacement='end'
                                 isLoadingText='SENDING'
                             >

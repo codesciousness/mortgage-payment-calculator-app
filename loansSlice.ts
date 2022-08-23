@@ -1,6 +1,8 @@
-import { createSlice, createSelector, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from './app/store';
 import { dateToString, formatAmount, calc } from './util/calculations';
+import axios from 'axios';
+import 'react-native-dotenv';
 
 export interface AmortizationDetail {
     date: string;
@@ -9,7 +11,7 @@ export interface AmortizationDetail {
     remainingBalance: string;
     totalPrincipal: string;
     totalInterest: string;
-}
+};
 
 interface LoanState {
     homePrice: string;
@@ -21,7 +23,10 @@ interface LoanState {
     privateMortgageInsurance: string;
     hoaFees: string;
     startDate: string;
-}
+    savingLoan: boolean;
+    saveLoanSuccess: boolean;
+    saveLoanError: boolean;
+};
 
 const initialState: LoanState = {
     homePrice: '350,000',
@@ -32,8 +37,42 @@ const initialState: LoanState = {
     homeInsurance: '175',
     privateMortgageInsurance: '0',
     hoaFees: '0',
-    startDate: dateToString(new Date())
-}
+    startDate: dateToString(new Date()),
+    savingLoan: false,
+    saveLoanSuccess: false,
+    saveLoanError: false
+};
+
+interface Loan {
+    name: string;
+    email: string;
+    homePrice: string;
+    downPayment: string;
+    loanTerm: number;
+    interestRate: number;
+    propertyTax: string;
+    homeInsurance: string;
+    privateMortgageInsurance: string;
+    hoaFees: string;
+    startDate: string;
+    payoffDate: string;
+    mortgagePayment: string;
+    monthlyPayment: string;
+    loanAmount: string;
+    loanCost: string;
+    totalInterest: string;
+};
+
+export const saveLoan = createAsyncThunk('loans/saveLoan',
+async (loan: Loan, { rejectWithValue }) => {
+    try {
+        const response = await axios.post(`${process.env._FIREBASE_FUNCTION_URL}/loans`, loan);
+        return response.data;
+    }
+    catch (err: any) {
+        return rejectWithValue(err.response.data);
+    }
+});
 
 const loansSlice = createSlice({
     name: 'loans',
@@ -85,13 +124,39 @@ const loansSlice = createSlice({
             state.privateMortgageInsurance = '0';
             state.hoaFees = '0';
             state.startDate = dateToString(new Date());
+            state.savingLoan = false;
+            state.saveLoanSuccess = false;
+            state.saveLoanError = false;
+            return state;
+        },
+        clearStatusUpdates: (state: LoanState) => {
+            state.savingLoan = false;
+            state.saveLoanSuccess = false;
+            state.saveLoanError = false;
             return state;
         }
+    },
+    extraReducers: (builder) => {
+        builder.addCase(saveLoan.pending, (state: LoanState) => {
+            state.savingLoan = true;
+            state.saveLoanSuccess = false;
+            state.saveLoanError = false;
+        })
+        builder.addCase(saveLoan.fulfilled, (state: LoanState) => {
+            state.savingLoan = false;
+            state.saveLoanSuccess = true;
+            state.saveLoanError = false;
+        })
+        builder.addCase(saveLoan.rejected, (state: LoanState, { payload }: { payload: any }) => {
+            state.savingLoan = false;
+            state.saveLoanSuccess = false;
+            state.saveLoanError = payload;
+        })
     }
 });
 
 export const { setHomePrice, setDownPayment, setLoanTerm, setInterestRate, setPropertyTax, 
-    setHomeInsurance, setPMI, setHOAFees, setStartDate, reset } = loansSlice.actions;
+    setHomeInsurance, setPMI, setHOAFees, setStartDate, reset, clearStatusUpdates } = loansSlice.actions;
 export default loansSlice.reducer;
 
 export const selectHomePrice = (state: RootState) => state.loans.homePrice;
@@ -103,6 +168,9 @@ export const selectHomeInsurance = (state: RootState) => state.loans.homeInsuran
 export const selectPMI = (state: RootState) => state.loans.privateMortgageInsurance;
 export const selectHOAFees = (state: RootState) => state.loans.hoaFees;
 export const selectStartDate = (state: RootState) => state.loans.startDate;
+export const selectSavingLoan = (state: RootState) => state.loans.savingLoan;
+export const selectSaveLoanSuccess = (state: RootState) => state.loans.saveLoanSuccess;
+export const selectSaveLoanError = (state: RootState) => state.loans.saveLoanError;
 
 export const selectLoanAmount = createSelector(
     selectHomePrice, 

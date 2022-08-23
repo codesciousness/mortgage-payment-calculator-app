@@ -1,137 +1,31 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import * as fs from 'fs';
-import * as path from 'path';
-import { formatAmount } from './util/calculations';
+import * as express from 'express';
+import { Express } from 'express';
+import * as cors from 'cors';
+import * as bodyParser from 'body-parser';
+import rateLimit, { MemoryStore } from 'express-rate-limit';
+import { router } from './loans/router';
+import { sendEmail } from './loans/sendEmail'
 import 'dotenv/config';
-const nodemailer = require('nodemailer');
 
 admin.initializeApp();
 
-const IN_PROD = process.env.NODE_ENV === 'production';
+const app: Express = express();
 
-exports.sendEmail = functions.firestore
-    .document('loans/{loanId}')
-    .onCreate((snap, context) => {
-        const { name, email, homePrice, downPayment, loanTerm, interestRate, startDate, propertyTax, homeInsurance,
-            privateMortgageInsurance, hoaFees, mortgagePayment, monthlyPayment, loanAmount, loanCost, totalInterest,
-            payoffDate } = snap.data();
-    
-        let emailHtml: string = '';
-    
-        try {
-            emailHtml = fs.readFileSync(path.join(__dirname, '../email/email.html'), 'utf8');
-        }
-        catch (err) {
-            console.error(err);
-        }
-    
-        emailHtml = emailHtml.replace('nameVariable', name.split(' ')[0]);
-        emailHtml = emailHtml.replace('homePriceVariable', homePrice);
-        emailHtml = emailHtml.replace('downPaymentVariable', downPayment);
-        emailHtml = emailHtml.replace('interestRateVariable', interestRate);
-        emailHtml = emailHtml.replace('loanTermVariable', loanTerm);
-        emailHtml = emailHtml.replace('startDateVariable', startDate);
-        emailHtml = emailHtml.replace('principalVariable', formatAmount(mortgagePayment));
-        emailHtml = emailHtml.replace('propertyTaxVariable', propertyTax);
-        emailHtml = emailHtml.replace('homeInsuranceVariable', homeInsurance);
-        emailHtml = emailHtml.replace('PMIVariable', privateMortgageInsurance);
-        emailHtml = emailHtml.replace('HOAFeesVariable', hoaFees);
-        emailHtml = emailHtml.replace('monthlyPaymentVariable', monthlyPayment);
-        emailHtml = emailHtml.replace('loanAmountVariable', loanAmount);
-        emailHtml = emailHtml.replace('totalInterestVariable', totalInterest);
-        emailHtml = emailHtml.replace('loanCostVariable', loanCost);
-        emailHtml = emailHtml.replace('payoffDateVariable', payoffDate);
-    
-        const plainText = `
-        Mortgage Loan Payment Summary
-        
-        Loan Details
-    
-        Hi, ${name.split(' ')[0]}! Here is your requested home loan information.
-    
-        Home Price: $${homePrice}
-        Down Payment: $${downPayment.dollar}
-        Interest Rate: ${interestRate}%
-        Loan Term: ${loanTerm} Years
-        Start Date: ${startDate}
-    
-        Monthly Payment Breakdown
-    
-        Principal & Interest: $${formatAmount(mortgagePayment)}
-        Property Tax: $${propertyTax.dollar}
-        Homeowner's Insurance: $${homeInsurance.dollar}
-        Private Mortgage Insurance: $${privateMortgageInsurance.dollar}
-        HOA Fees: $${hoaFees.dollar}
-        Total Monthly Payment: $${monthlyPayment}
-    
-        Loan Totals & Payoff Date
-    
-        Loan Amount: $${loanAmount}
-        Total Interest Paid: $${totalInterest}
-        Total Cost of Loan: $${loanCost}
-        Payoff Date: ${payoffDate}
-        `;
-    
-        async function sendEmail() {
-            let mailConfig;
-            const testAccount = await nodemailer.createTestAccount();
-    
-            if (IN_PROD) {
-                mailConfig = {
-                    service: 'gmail',
-                    auth: {
-                        type: 'OAuth2',
-                        user: process.env.EMAIL_USERNAME,
-                        pass: process.env.EMAIL_PASSWORD,
-                        clientId: process.env.CLIENT_ID,
-                        clientSecret: process.env.CLIENT_SECRET,
-                        refreshToken: process.env.REFRESH_TOKEN
-                    }
-                };
-            }
-            else {
-                mailConfig = {
-                    host: 'smtp.ethereal.email',
-                    port: 587,
-                    secure: false,
-                    auth: {
-                        user: testAccount.user,
-                        pass: testAccount.pass,
-                    }
-                };
-            }
-        
-            const transporter = nodemailer.createTransport(mailConfig);
-        
-            const emailInfo = await transporter.sendMail({
-                from: `"Mortgage Payment Calculator" <${process.env.EMAIL_USERNAME}@gmail.com>`,
-                to: `${name} <${email}>`,
-                subject: "Mortgage Loan Payment Summary",
-                text: plainText,
-                html: emailHtml,
-                attachments: [
-                    {
-                        filename: 'img1.jpg',
-                        path: `${__dirname}/../email/images/towfiqu-barbhuiya-05XcCfTOzN4-unsplash.jpg`,
-                        cid: 'img1'
-                    },
-                    {
-                        filename: 'img2.jpg',
-                        path: `${__dirname}/../email/images/tierra-mallorca-rgJ1J8SDEAY-unsplash.jpg`,
-                        cid: 'img2'
-                    },
-                    {
-                        filename: 'img3.jpg',
-                        path: `${__dirname}/../email/images/tierra-mallorca-JXI2Ap8dTNc-unsplash.jpg`,
-                        cid: 'img3'
-                    }
-                ]
-            });
-        
-            console.log('Message sent: %s', emailInfo.messageId);
-            console.log('Preview URL: %s', nodemailer.getTestMessageUrl(emailInfo));
-        }
-        
-        return sendEmail().catch(console.error);
-    });
+//Add middleware for rate limiting requests
+const rateLimiter = rateLimit({
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	max: 100, // Limit each IP to 100 requests per window (per 15 minutes)
+	standardHeaders: true, // Return rate limit info in the "RateLimit-*" headers
+	store: new MemoryStore()
+});
+
+app.use(rateLimiter);
+app.use(cors({ origin: true }));
+app.use(bodyParser.json());
+router(app);
+
+export const api = functions.https.onRequest(app);
+
+exports.sendEmail = functions.firestore.document('loans/{loanId}').onWrite(sendEmail);

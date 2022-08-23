@@ -1,4 +1,4 @@
-require('number-to-locale-string-polyfill');
+import 'number-to-locale-string-polyfill';
 
 export const isInt = (num: number | string): boolean => {
     let number: number;

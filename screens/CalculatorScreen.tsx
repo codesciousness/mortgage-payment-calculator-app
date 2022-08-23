@@ -49,7 +49,7 @@ const CalculatorScreen = (): JSX.Element => {
 
     const handleLoanTermChange = (value: number) => dispatch(setLoanTerm(value));
 
-    const handleStartDateChange = (value: string) => dispatch(setStartDate(value));
+    const handleStartDateChange = (value: string) => dispatch(setStartDate(value.trim()));
 
     const handlePropertyTaxChange = (value: string) => {
         if (allNums(value)) dispatch(setPropertyTax(value));
