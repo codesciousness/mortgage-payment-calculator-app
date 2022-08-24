@@ -8,7 +8,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { selectHomePrice, selectDownPayment, selectLoanTerm, selectInterestRate, selectPropertyTax, 
     selectHomeInsurance, selectPMI, selectHOAFees, selectStartDate, selectMonthlyPayment, 
     setHomePrice, setDownPayment, setLoanTerm, setInterestRate, setPropertyTax, setHomeInsurance, 
-    setPMI, setHOAFees, setStartDate } from '../loansSlice';
+    setPMI, setHOAFees, setStartDate, reset } from '../loansSlice';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { fromPercent } from '../util/calculations';
 import 'react-native-dotenv';
@@ -154,6 +154,18 @@ const CalculatorScreen = (): JSX.Element => {
                     <InputLeftAddon w='7%' children={'$'}/>
                     <Input w='93%' placeholder='0' value={hoaFees} accessibilityLabel='Monthly HOA fees' onChangeText={handleHOAFeesChange}/>
                 </InputGroup>
+                <Center>
+                    <Button
+                        mb={6}
+                        px={8}
+                        size='md'
+                        bg='lightBlue.300'
+                        _text={{color: 'blueGray.900'}}
+                        onPress={() => dispatch(reset())}
+                    >
+                        RESET
+                    </Button>
+                </Center>
             </VStack>
         </ScrollView>
     );
