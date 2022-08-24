@@ -28,7 +28,7 @@ const PayoffScreen = (): JSX.Element => {
     return (
         <ScrollView px={2} _dark={{ bg: 'blueGray.900' }} _light={{ bg: 'blueGray.50' }}>
             <ToggleDarkMode/>
-            <VStack my={[1, 1, 4]}>
+            <VStack my={[1, 1, 4]} accessibilityLabel='Amortization table display'>
                 <Heading mb={[0, 1, 2]} textAlign='center'>Amortization Schedule</Heading>
                 <DataTable>
                     <DataTable.Header>

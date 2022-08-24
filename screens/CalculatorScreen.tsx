@@ -11,8 +11,11 @@ import { selectHomePrice, selectDownPayment, selectLoanTerm, selectInterestRate,
     setPMI, setHOAFees, setStartDate } from '../loansSlice';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { fromPercent } from '../util/calculations';
+import 'react-native-dotenv';
 
-//const adUnitId = __DEV__ ? TestIds.INTERSTITIAL : 'ca-app-pub-7298976665565402~8630267393';
+const publisherID = process.env.GOOGLE_ADMOB_PUBLISHER_ID ? process.env.GOOGLE_ADMOB_PUBLISHER_ID : null;
+
+const adUnitId = __DEV__ ? TestIds.INTERSTITIAL : publisherID;
 
 const CalculatorScreen = (): JSX.Element => {
     const homePrice = useAppSelector(selectHomePrice);
@@ -26,7 +29,7 @@ const CalculatorScreen = (): JSX.Element => {
     const hoaFees = useAppSelector(selectHOAFees);
     const monthlyPayment = useAppSelector(selectMonthlyPayment);
     const dispatch = useAppDispatch();
-    const { isLoaded, isClosed, load, show } = useInterstitialAd(TestIds.INTERSTITIAL, {
+    const { isLoaded, isClosed, load, show } = useInterstitialAd(adUnitId, {
         requestNonPersonalizedAdsOnly: true,
         keywords: ['mortgage loan', 'real estate']
     });
@@ -106,7 +109,7 @@ const CalculatorScreen = (): JSX.Element => {
                 <Text>Home price</Text>
                 <InputGroup w='100%'>
                     <InputLeftAddon w='7%' children={'$'}/>
-                    <Input w='93%' placeholder='350,000' value={homePrice} onChangeText={handleHomePriceChange}/>
+                    <Input w='93%' placeholder='350,000' value={homePrice} accessibilityLabel='Home price' onChangeText={handleHomePriceChange}/>
                 </InputGroup>
                 <HStack justifyContent='space-between'><Text>Down payment</Text><Text bold>${downPayment}</Text></HStack>
                 <Slider w='100%' defaultValue={10} minValue={0} maxValue={100} step={1} accessibilityLabel='Down payment' onChange={handleDownPaymentChange}>
@@ -134,22 +137,22 @@ const CalculatorScreen = (): JSX.Element => {
                 <Text>Monthly property tax</Text>
                 <InputGroup w='100%'>
                     <InputLeftAddon w='7%' children={'$'}/>
-                    <Input w='93%' placeholder='315' value={propertyTax} onChangeText={handlePropertyTaxChange}/>
+                    <Input w='93%' placeholder='315' value={propertyTax} accessibilityLabel='Monthly property tax' onChangeText={handlePropertyTaxChange}/>
                 </InputGroup>
                 <Text>Monthly home insurance</Text>
                 <InputGroup w='100%'>
                     <InputLeftAddon w='7%' children={'$'}/>
-                    <Input w='93%' placeholder='175' value={homeInsurance} onChangeText={handleHomeInsuranceChange}/>
+                    <Input w='93%' placeholder='175' value={homeInsurance} accessibilityLabel='Monthly home insurance' onChangeText={handleHomeInsuranceChange}/>
                 </InputGroup>
                 <Text>Monthly PMI</Text>
                 <InputGroup w='100%'>
                     <InputLeftAddon w='7%' children={'$'}/>
-                    <Input w='93%' placeholder='0' value={privateMortgageInsurance} onChangeText={handlePMIChange}/>
+                    <Input w='93%' placeholder='0' value={privateMortgageInsurance} accessibilityLabel='Monthly PMI' onChangeText={handlePMIChange}/>
                 </InputGroup>
                 <Text>Monthly HOA fees</Text>
                 <InputGroup w='100%' mb={4}>
                     <InputLeftAddon w='7%' children={'$'}/>
-                    <Input w='93%' placeholder='0' value={hoaFees} onChangeText={handleHOAFeesChange}/>
+                    <Input w='93%' placeholder='0' value={hoaFees} accessibilityLabel='Monthly HOA fees' onChangeText={handleHOAFeesChange}/>
                 </InputGroup>
             </VStack>
         </ScrollView>

@@ -7,13 +7,16 @@ import CalculatorScreen from '../screens/CalculatorScreen';
 import PaymentScreen from '../screens/PaymentScreen';
 import CostScreen from '../screens/CostScreen';
 import PayoffScreen from '../screens/PayoffScreen';
+import 'react-native-dotenv';
 
 const Tab = createBottomTabNavigator();
 
-//const adUnitId = __DEV__ ? TestIds.INTERSTITIAL : 'ca-app-pub-7298976665565402~8630267393';
+const publisherID = process.env.GOOGLE_ADMOB_PUBLISHER_ID ? process.env.GOOGLE_ADMOB_PUBLISHER_ID : null;
+
+const adUnitId = __DEV__ ? TestIds.INTERSTITIAL : publisherID;
 
 const AppNavigator = (): JSX.Element => {
-    const { isLoaded, load, show } = useInterstitialAd(TestIds.INTERSTITIAL, {
+    const { isLoaded, load, show } = useInterstitialAd(adUnitId, {
         requestNonPersonalizedAdsOnly: true,
         keywords: ['mortgage loan', 'real estate']
     });

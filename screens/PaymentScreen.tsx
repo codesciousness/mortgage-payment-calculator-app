@@ -39,7 +39,7 @@ const PaymentScreen = (): JSX.Element => {
         <ScrollView px={3} _dark={{ bg: 'blueGray.900' }} _light={{ bg: 'blueGray.50' }}>
             <ToggleDarkMode/>
             <Center position='relative'>
-                <Box w={width} h={width}>
+                <Box w={width} h={width} accessibilityLabel='Donut chart display'>
                     <PieChart data={data} donut radius={width/2} innerRadius={width/2 - 10} innerCircleColor={innerCircleColor}/>
                 </Box>
                 <Center position='absolute'>

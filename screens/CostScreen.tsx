@@ -66,7 +66,7 @@ const CostScreen = (): JSX.Element => {
             <ToggleDarkMode/>
             <Center>
                 <Heading>Mortgage Loan Cost</Heading>
-                <Box w='100%' mt={2} mb={[4, 6, 10]} mx='auto'>
+                <Box w='100%' mt={2} mb={[4, 6, 10]} mx='auto' accessibilityLabel='Line chart display'>
                     <LineChart
                         data={data}
                         data2={data2} 
@@ -105,7 +105,7 @@ const CostScreen = (): JSX.Element => {
                                 setLoanBalance(formatAmount(items[2].value));
                                 return (
                                     <View p={2} shadow={3} rounded='md' justifyContent='center' _dark={{ bg: 'blueGray.800' }} _light={{ bg: 'white' }}>
-                                        <Text textAlign='center'>
+                                        <Text textAlign='center' accessibilityLabel='Data point date'>
                                             {items[0].label}
                                         </Text>
                                     </View>
