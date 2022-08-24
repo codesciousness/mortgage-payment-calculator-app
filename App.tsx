@@ -6,7 +6,7 @@ import { AppRegistry } from 'react-native';
 import { Provider as PaperProvider } from 'react-native-paper';
 import mobileAds from 'react-native-google-mobile-ads';
 import { LinearGradient } from 'expo-linear-gradient';
-import app from './app.config';
+import * as app from './app.json';
 import AppNavigator from './components/AppNavigator';
 
 mobileAds().initialize();
