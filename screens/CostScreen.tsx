@@ -99,6 +99,7 @@ const CostScreen = (): JSX.Element => {
                             radius: 4,
                             pointerLabelWidth: 100,
                             pointerLabelHeight: 90,
+                            pointerVanishDelay: 1000,
                             pointerLabelComponent: (items: any) => {
                                 setPrincipalPaid(formatAmount(items[0].value));
                                 setInterestPaid(formatAmount(items[1].value));
