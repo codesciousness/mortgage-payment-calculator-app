@@ -65,8 +65,11 @@ interface Loan {
 
 export const saveLoan = createAsyncThunk('loans/saveLoan',
 async (loan: Loan, { rejectWithValue }) => {
+    const headers = {
+        'content-type': 'application/json'
+    };
     try {
-        const response = await axios.post(`${process.env._FIREBASE_FUNCTION_URL}/loans`, loan);
+        const response = await axios.post(`${process.env._FIREBASE_FUNCTION_URL}/loans`, loan, { headers });
         return response.data;
     }
     catch (err: any) {

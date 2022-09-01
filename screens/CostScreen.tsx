@@ -100,12 +100,23 @@ const CostScreen = (): JSX.Element => {
                             pointerLabelWidth: 100,
                             pointerLabelHeight: 90,
                             pointerVanishDelay: 1000,
+                            autoAdjustPointerLabelPosition: false,
                             pointerLabelComponent: (items: any) => {
                                 setPrincipalPaid(formatAmount(items[0].value));
                                 setInterestPaid(formatAmount(items[1].value));
                                 setLoanBalance(formatAmount(items[2].value));
                                 return (
-                                    <View p={2} shadow={3} rounded='md' justifyContent='center' _dark={{ bg: 'blueGray.800' }} _light={{ bg: 'white' }}>
+                                    <View
+                                        p={2}
+                                        shadow={3}
+                                        rounded='md'
+                                        justifyContent='center'
+                                        position='relative'
+                                        top={2.5}
+                                        left={-38}
+                                        _dark={{ bg: 'blueGray.800' }}
+                                        _light={{ bg: 'white' }}
+                                    >
                                         <Text textAlign='center' accessibilityLabel='Data point date'>
                                             {items[0].label}
                                         </Text>

@@ -122,5 +122,5 @@ export async function saveLoan(req: Request, res: Response) {
 };
 
 function handleError(res: Response, err: any) {
-    return res.status(500).send({ message: `${err.code} - ${err.message}` });
+    return res.status(500).send(`${err.code} - ${err.message}`);
 };

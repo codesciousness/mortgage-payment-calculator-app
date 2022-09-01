@@ -8,7 +8,7 @@ const ToggleDarkMode = (): JSX.Element => {
     const iconColor = colorMode === 'light' ? 'black' : 'white';
 
     return (
-        <HStack my={1} mr={2} space={1} alignItems='center' alignSelf='flex-end'>
+        <HStack m={2} space={1} alignItems='center' alignSelf='flex-end'>
             <Switch
                 isChecked={colorMode === 'light'}
                 onToggle={toggleColorMode}

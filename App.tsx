@@ -6,6 +6,7 @@ import { AppRegistry } from 'react-native';
 import { Provider as PaperProvider } from 'react-native-paper';
 import mobileAds from 'react-native-google-mobile-ads';
 import { LinearGradient } from 'expo-linear-gradient';
+import { StatusBar } from 'expo-status-bar';
 import * as app from './app.json';
 import AppNavigator from './components/AppNavigator';
 
@@ -44,6 +45,7 @@ export default function App() {
     <NativeBaseProvider config={config} theme={theme}>
       <Provider store={store}>
         <PaperProvider>
+          <StatusBar style='dark'/>
           <AppNavigator/>
         </PaperProvider>
       </Provider>
