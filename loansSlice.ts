@@ -66,10 +66,11 @@ interface Loan {
 export const saveLoan = createAsyncThunk('loans/saveLoan',
 async (loan: Loan, { rejectWithValue }) => {
     const headers = {
-        'content-type': 'application/json'
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
     };
     try {
-        const response = await axios.post(`${process.env._FIREBASE_FUNCTION_URL}/loans`, loan, { headers });
+        const response = await axios.post(`${process.env._FIREBASE_FUNCTION_URL}/loans`, JSON.stringify(loan), { headers });
         return response.data;
     }
     catch (err: any) {
