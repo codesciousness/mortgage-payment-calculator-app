@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from './app/store';
 import { dateToString, formatAmount, calc } from './util/calculations';
-import axios from 'axios';
 import 'react-native-dotenv';
 
 export interface AmortizationDetail {
@@ -66,16 +65,19 @@ interface Loan {
 export const saveLoan = createAsyncThunk('loans/saveLoan',
 async (loan: Loan, { rejectWithValue }) => {
     const headers = {
-        'Accept': 'application/json',
+        'Accept': 'application/json, text/plain; charset=utf-8',
         'Content-Type': 'application/json'
     };
-    try {
-        const response = await axios.post(`${process.env._FIREBASE_FUNCTION_URL}/loans`, JSON.stringify(loan), { headers });
-        return response.data;
+    const response = await fetch(`${process.env._FIREBASE_FUNCTION_URL}/loans`, {
+        method: 'POST',
+        body: JSON.stringify(loan),
+        headers
+    });
+    if (response.ok) {
+        const jsonResponse = await response.json();
+        return jsonResponse;
     }
-    catch (err: any) {
-        return rejectWithValue(err.response.data);
-    }
+    return rejectWithValue(await response.text());
 });
 
 const loansSlice = createSlice({
