@@ -2,7 +2,7 @@
   "expo": {
     "name": "Mortgage Calculator",
     "slug": "mortgage-payment-calculator-app",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -12,7 +12,8 @@
     },
     "owner": "codesciousness",
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/1455701c-e9b0-4bd3-a9b7-06511cd53464"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -26,7 +27,7 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.codesciousness.mortgagepaymentcalculatorapp",
-      "versionCode": 4
+      "versionCode": 5
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -41,12 +42,28 @@
             "buildToolsVersion": "31.0.0"
           }
         }
-      ]
+      ],
+      "sentry-expo"
     ],
     "extra": {
       "eas": {
         "projectId": "1455701c-e9b0-4bd3-a9b7-06511cd53464"
       }
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "hooks": {
+      "postPublish": [
+        {
+          "file": "sentry-expo/upload-sourcemaps",
+          "config": {
+            "organization": "codesci",
+            "project": "react-native",
+            "authToken": "a3cf1d04079e4d8098cb32cd82bd97eb6fba74648c474db9937ce8a6da5ffced"
+          }
+        }
+      ]
     }
   },
   "react-native-google-mobile-ads": {

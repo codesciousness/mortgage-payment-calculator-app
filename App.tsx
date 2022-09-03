@@ -7,8 +7,15 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import mobileAds from 'react-native-google-mobile-ads';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
+import * as Sentry from 'sentry-expo';
 import * as app from './app.json';
 import AppNavigator from './components/AppNavigator';
+
+Sentry.init({
+  dsn: 'https://d15d768a2ca74e31b917abcbc0cbcd06@o1392510.ingest.sentry.io/6714021',
+  enableInExpoDevelopment: true,
+  debug: false
+});
 
 mobileAds().initialize();
 
