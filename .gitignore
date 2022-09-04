@@ -3,6 +3,7 @@ functions/.env
 node_modules/
 .expo/
 keys/
+dist/
 npm-debug.*
 *.jks
 *.p8

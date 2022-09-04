@@ -10,9 +10,10 @@ import { StatusBar } from 'expo-status-bar';
 import * as Sentry from 'sentry-expo';
 import * as app from './app.json';
 import AppNavigator from './components/AppNavigator';
+import 'react-native-dotenv';
 
 Sentry.init({
-  dsn: 'https://d15d768a2ca74e31b917abcbc0cbcd06@o1392510.ingest.sentry.io/6714021',
+  dsn: process.env.SENTRY_DSN,
   enableInExpoDevelopment: true,
   debug: false
 });
