@@ -43,7 +43,8 @@
           }
         }
       ],
-      "sentry-expo"
+      "sentry-expo",
+      "./withAndroidManifest.js"
     ],
     "extra": {
       "eas": {
