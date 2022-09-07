@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NativeBaseProvider, extendTheme } from 'native-base';
 import { Provider } from 'react-redux';
 import { store } from './app/store';
@@ -8,6 +8,7 @@ import mobileAds from 'react-native-google-mobile-ads';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import * as Sentry from 'sentry-expo';
+import { captureException, captureMessage } from '@sentry/react-native';
 import * as app from './app.json';
 import AppNavigator from './components/AppNavigator';
 import 'react-native-dotenv';
@@ -17,8 +18,6 @@ Sentry.init({
   enableInExpoDevelopment: true,
   debug: false
 });
-
-mobileAds().initialize();
 
 const config = {
   dependencies: {
@@ -48,6 +47,16 @@ export default function App() {
       initialColorMode: 'light',
     }
   });
+
+  useEffect(() => {
+    mobileAds().initialize().then(adapterStatuses => {
+      captureMessage(JSON.stringify(adapterStatuses, null, 2));
+      // Initialization complete!
+    })
+    .catch(err => {
+      captureException(err.message);
+    });
+  }, []);
 
   return (
     <NativeBaseProvider config={config} theme={theme}>
