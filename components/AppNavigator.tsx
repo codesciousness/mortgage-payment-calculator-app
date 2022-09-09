@@ -7,11 +7,11 @@ import CalculatorScreen from '../screens/CalculatorScreen';
 import PaymentScreen from '../screens/PaymentScreen';
 import CostScreen from '../screens/CostScreen';
 import PayoffScreen from '../screens/PayoffScreen';
-import 'react-native-dotenv';
+import { GOOGLE_ADMOB_PUBLISHER_ID } from '@env';
 
 const Tab = createBottomTabNavigator();
 
-const publisherID = process.env.GOOGLE_ADMOB_PUBLISHER_ID ? process.env.GOOGLE_ADMOB_PUBLISHER_ID : null;
+const publisherID = GOOGLE_ADMOB_PUBLISHER_ID ? GOOGLE_ADMOB_PUBLISHER_ID : null;
 
 const adUnitId = __DEV__ ? TestIds.INTERSTITIAL : publisherID;
 

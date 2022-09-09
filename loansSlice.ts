@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk, createSelector, PayloadAction } from '@r
 import type { RootState } from './app/store';
 import { dateToString, formatAmount, calc } from './util/calculations';
 import { captureException } from '@sentry/react-native';
-import 'react-native-dotenv';
+import { _FIREBASE_FUNCTION_URL } from '@env';
 
 export interface AmortizationDetail {
     date: string;
@@ -69,7 +69,7 @@ async (loan: Loan, { rejectWithValue }) => {
         'Accept': 'application/json, text/plain; charset=utf-8',
         'Content-Type': 'application/json'
     };
-    const response = await fetch(`${process.env._FIREBASE_FUNCTION_URL}/loans`, {
+    const response = await fetch(`${_FIREBASE_FUNCTION_URL}/loans`, {
         method: 'POST',
         body: JSON.stringify(loan),
         headers

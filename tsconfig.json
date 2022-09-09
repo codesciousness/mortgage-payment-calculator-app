@@ -4,5 +4,6 @@
     "strict": true,
     "skipLibCheck": true
   },
-  "exclude": ["functions"]
+  "exclude": ["functions"],
+  "typeRoots": ["./types"]
 }

@@ -11,10 +11,10 @@ import * as Sentry from 'sentry-expo';
 import { captureException, captureMessage } from '@sentry/react-native';
 import * as app from './app.json';
 import AppNavigator from './components/AppNavigator';
-import 'react-native-dotenv';
+import { SENTRY_DSN } from '@env';
 
 Sentry.init({
-  dsn: process.env.SENTRY_DSN,
+  dsn: SENTRY_DSN,
   enableInExpoDevelopment: true,
   debug: false
 });

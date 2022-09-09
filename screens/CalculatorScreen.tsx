@@ -11,9 +11,9 @@ import { selectHomePrice, selectDownPayment, selectLoanTerm, selectInterestRate,
     setPMI, setHOAFees, setStartDate, reset } from '../loansSlice';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { fromPercent } from '../util/calculations';
-import 'react-native-dotenv';
+import { GOOGLE_ADMOB_PUBLISHER_ID } from '@env';
 
-const publisherID = process.env.GOOGLE_ADMOB_PUBLISHER_ID ? process.env.GOOGLE_ADMOB_PUBLISHER_ID : null;
+const publisherID = GOOGLE_ADMOB_PUBLISHER_ID ? GOOGLE_ADMOB_PUBLISHER_ID : null;
 
 const adUnitId = __DEV__ ? TestIds.INTERSTITIAL : publisherID;
 
