@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from './app/store';
 import { dateToString, formatAmount, calc } from './util/calculations';
-import { captureException } from '@sentry/react-native';
+//import { captureException } from '@sentry/react-native';
 import { _FIREBASE_FUNCTION_URL } from '@env';
 
 export interface AmortizationDetail {
@@ -79,7 +79,8 @@ async (loan: Loan, { rejectWithValue }) => {
         return jsonResponse;
     }
     const errResponse = await response.text();
-    captureException(errResponse);
+    console.error(errResponse);
+    //captureException(errResponse);
     return rejectWithValue(errResponse);
 });
 
