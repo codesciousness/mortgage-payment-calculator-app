@@ -43,7 +43,6 @@
           }
         }
       ],
-      "sentry-expo",
       "./withAndroidManifest.js"
     ],
     "extra": {
