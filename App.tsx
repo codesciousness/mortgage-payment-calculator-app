@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { NativeBaseProvider, extendTheme } from 'native-base';
 import { Provider } from 'react-redux';
 import { store } from './app/store';
@@ -18,6 +18,16 @@ import { SENTRY_DSN } from '@env';
   enableInExpoDevelopment: true,
   debug: false
 });*/
+
+mobileAds().initialize().then(adapterStatuses => {
+  console.info(JSON.stringify(adapterStatuses, null, 2));
+  //captureMessage(JSON.stringify(adapterStatuses, null, 2));
+  // Initialization complete!
+})
+.catch(err => {
+  console.error(err.message);
+  //captureException(err.message);
+});
 
 const config = {
   dependencies: {
@@ -47,18 +57,6 @@ export default function App() {
       initialColorMode: 'light',
     }
   });
-
-  useEffect(() => {
-    mobileAds().initialize().then(adapterStatuses => {
-      console.info(JSON.stringify(adapterStatuses, null, 2));
-      //captureMessage(JSON.stringify(adapterStatuses, null, 2));
-      // Initialization complete!
-    })
-    .catch(err => {
-      console.error(err.message);
-      //captureException(err.message);
-    });
-  }, []);
 
   return (
     <NativeBaseProvider config={config} theme={theme}>

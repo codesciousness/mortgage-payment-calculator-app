@@ -17,6 +17,8 @@ const publisherID = GOOGLE_ADMOB_PUBLISHER_ID ? GOOGLE_ADMOB_PUBLISHER_ID : null
 
 const adUnitId = __DEV__ ? TestIds.INTERSTITIAL : publisherID;
 
+console.log('Dev Mode:', __DEV__);
+
 const CalculatorScreen = (): JSX.Element => {
     const homePrice = useAppSelector(selectHomePrice);
     const downPayment = useAppSelector(selectDownPayment);
@@ -71,7 +73,7 @@ const CalculatorScreen = (): JSX.Element => {
     };
 
     const displayAd = () => {
-        if (isLoaded) show();
+        if (isLoaded) show()
         else nav.navigate('Payment', { id: 'payment' });
     };
 
@@ -82,6 +84,7 @@ const CalculatorScreen = (): JSX.Element => {
     useEffect(() => {
         if (isClosed) {
             nav.navigate('Payment', { id: 'payment' });
+            load();
         }
     }, [isClosed, nav]);
 

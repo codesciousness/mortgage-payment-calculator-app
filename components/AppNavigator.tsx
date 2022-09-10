@@ -15,8 +15,10 @@ const publisherID = GOOGLE_ADMOB_PUBLISHER_ID ? GOOGLE_ADMOB_PUBLISHER_ID : null
 
 const adUnitId = __DEV__ ? TestIds.INTERSTITIAL : publisherID;
 
+console.log('Dev Mode:', __DEV__);
+
 const AppNavigator = (): JSX.Element => {
-    const { isLoaded, load, show } = useInterstitialAd(adUnitId, {
+    const { isLoaded, isClosed, load, show } = useInterstitialAd(adUnitId, {
         requestNonPersonalizedAdsOnly: true,
         keywords: ['mortgage loan', 'real estate']
     });
@@ -24,6 +26,10 @@ const AppNavigator = (): JSX.Element => {
     useEffect(() => {
         load();
     }, [load]);
+
+    useEffect(() => {
+        if (isClosed) load();
+    }, [isClosed]);
 
     return (
         <NavigationContainer>
