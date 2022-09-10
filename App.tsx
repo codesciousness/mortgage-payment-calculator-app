@@ -7,26 +7,26 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import mobileAds from 'react-native-google-mobile-ads';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
-//import * as Sentry from 'sentry-expo'; //commenting out due to sentry-expo bug related to github open issue #279
-//import { captureException, captureMessage } from '@sentry/react-native';
+import * as Sentry from 'sentry-expo'; //sentry-expo bug causes build to fail related to github open issue #279
+import { captureException, captureMessage } from '@sentry/react-native';
 import * as app from './app.json';
 import AppNavigator from './components/AppNavigator';
 import { SENTRY_DSN } from '@env';
 
-/*Sentry.init({
+Sentry.init({
   dsn: SENTRY_DSN,
   enableInExpoDevelopment: true,
   debug: false
-});*/
+});
 
 mobileAds().initialize().then(adapterStatuses => {
-  console.info(JSON.stringify(adapterStatuses, null, 2));
-  //captureMessage(JSON.stringify(adapterStatuses, null, 2));
+  captureMessage(JSON.stringify(adapterStatuses, null, 2));
+  //console.info(JSON.stringify(adapterStatuses, null, 2));
   // Initialization complete!
 })
 .catch(err => {
-  console.error(err.message);
-  //captureException(err.message);
+  captureException(err.message);
+  //console.error(err.message);
 });
 
 const config = {

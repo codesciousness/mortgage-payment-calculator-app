@@ -42,7 +42,9 @@
             "buildToolsVersion": "31.0.0"
           }
         }
-      ]
+      ],
+      "sentry-expo",
+      "./withAndroidManifest.js"
     ],
     "extra": {
       "eas": {
