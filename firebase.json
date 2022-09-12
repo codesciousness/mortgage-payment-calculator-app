@@ -8,6 +8,22 @@
     ],
     "predeploy": [
       "npm --prefix \"$RESOURCE_DIR\" run build"
+    ],
+    "source": "functions"
+  },
+  "hosting": {
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "redirects": [
+      {
+        "source": "/",
+        "destination": "https://mortgage-payment-calculator.herokuapp.com",
+        "type": 301
+      }
     ]
   }
 }
