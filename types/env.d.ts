@@ -7,6 +7,6 @@ declare module '@env' {
     export const _FIREBASE_APP_ID: string;
     export const _FIREBASE_MEASUREMENT_ID: string;
     export const _FIREBASE_FUNCTION_URL: string;
-    export const GOOGLE_ADMOB_PUBLISHER_ID: string;
+    export const ADMOB_INTERSTITIAL_AD_UNIT_ID: string;
     export const SENTRY_DSN: string;
 }

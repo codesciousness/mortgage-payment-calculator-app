@@ -3,21 +3,15 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useInterstitialAd, TestIds } from 'react-native-google-mobile-ads';
 import { Ionicons } from '@expo/vector-icons';
-import { captureMessage } from '@sentry/react-native';
 import CalculatorScreen from '../screens/CalculatorScreen';
 import PaymentScreen from '../screens/PaymentScreen';
 import CostScreen from '../screens/CostScreen';
 import PayoffScreen from '../screens/PayoffScreen';
-import { GOOGLE_ADMOB_PUBLISHER_ID } from '@env';
+import { ADMOB_INTERSTITIAL_AD_UNIT_ID } from '@env';
 
 const Tab = createBottomTabNavigator();
 
-const publisherID = GOOGLE_ADMOB_PUBLISHER_ID ? GOOGLE_ADMOB_PUBLISHER_ID : null;
-
-const adUnitId = __DEV__ ? TestIds.INTERSTITIAL : publisherID;
-
-captureMessage(`adUnitId in Dev Mode: ${__DEV__}`);
-//console.log('adUnitId in Dev Mode:', __DEV__);
+const adUnitId = __DEV__ ? TestIds.INTERSTITIAL : ADMOB_INTERSTITIAL_AD_UNIT_ID;
 
 const AppNavigator = (): JSX.Element => {
     const { isLoaded, isClosed, load, show } = useInterstitialAd(adUnitId, {

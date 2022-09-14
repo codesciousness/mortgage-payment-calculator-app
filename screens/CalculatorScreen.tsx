@@ -5,21 +5,15 @@ import { useNavigation } from '@react-navigation/native';
 import { useInterstitialAd, TestIds } from 'react-native-google-mobile-ads';
 import ToggleDarkMode from '../components/ToggleDarkMode';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { captureMessage } from '@sentry/react-native';
 import { selectHomePrice, selectDownPayment, selectLoanTerm, selectInterestRate, selectPropertyTax, 
     selectHomeInsurance, selectPMI, selectHOAFees, selectStartDate, selectMonthlyPayment, 
     setHomePrice, setDownPayment, setLoanTerm, setInterestRate, setPropertyTax, setHomeInsurance, 
     setPMI, setHOAFees, setStartDate, reset } from '../loansSlice';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { fromPercent } from '../util/calculations';
-import { GOOGLE_ADMOB_PUBLISHER_ID } from '@env';
+import { ADMOB_INTERSTITIAL_AD_UNIT_ID } from '@env';
 
-const publisherID = GOOGLE_ADMOB_PUBLISHER_ID ? GOOGLE_ADMOB_PUBLISHER_ID : null;
-
-const adUnitId = __DEV__ ? TestIds.INTERSTITIAL : publisherID;
-
-captureMessage(`adUnitId in Dev Mode: ${__DEV__}`);
-//console.log('adUnitId in Dev Mode:', __DEV__);
+const adUnitId = __DEV__ ? TestIds.INTERSTITIAL : ADMOB_INTERSTITIAL_AD_UNIT_ID;
 
 const CalculatorScreen = (): JSX.Element => {
     const homePrice = useAppSelector(selectHomePrice);
